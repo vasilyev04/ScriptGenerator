@@ -1,26 +1,14 @@
 package com.example.scriptgenerator.presentation
 
 import android.Manifest
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Typeface
-import android.graphics.pdf.PdfDocument
 import android.os.Bundle
-import android.os.Environment
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Scaffold
-import androidx.compose.ui.Modifier
-import com.example.scriptgenerator.common.generatePdf
-import com.example.scriptgenerator.presentation.screens.onboarding.OnboardingScreen
+import androidx.navigation.compose.rememberNavController
+import com.example.scriptgenerator.presentation.screens.App
 import com.example.scriptgenerator.presentation.theme.ScriptGeneratorTheme
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 
 
 @AndroidEntryPoint
@@ -34,17 +22,18 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val navController = rememberNavController()
             ScriptGeneratorTheme {
-                Scaffold( modifier = Modifier.fillMaxSize() ) { innerPadding ->
-                    OnboardingScreen()
-                    requestPermissions()
-                    generatePdf()
-                    Toast.makeText(
-                        this@MainActivity,
-                        "PDF generated",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+                App(navController)
+//                Scaffold( modifier = Modifier.fillMaxSize() ) { innerPadding ->
+////                    requestPermissions()
+////                    generatePdf()
+////                    Toast.makeText(
+////                        this@MainActivity,
+////                        "PDF generated",
+////                        Toast.LENGTH_SHORT
+////                    ).show()
+//                }
             }
         }
     }

@@ -9,13 +9,13 @@ import com.example.scriptgenerator.BuildConfig
 
 @Composable
 fun OnboardingScreen(viewModel: OnboardingViewModel = hiltViewModel()){
-    Greeting(name = BuildConfig.GEMINI_API_KEY )
+    Greeting(name = BuildConfig.GEMINI_API_KEY)
 }
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
         text = "Hello $name!",
-        modifier = modifier
+        modifier = modifier,
     )
 }

@@ -1,3 +1,29 @@
 <resources>
     <string name="app_name">ScriptGenerator</string>
+
+    <string name="settings_label">Настройки</string>
+    <string name="settings_label_choose_game">Какую дидактическую игру вы хотите создать?</string>
+    <string name="settings_label_thematic">Тематика</string>
+    <string name="settings_label_area">Образовательная область</string>
+    <string name="settings_label_participants">Количество участников</string>
+    <string name="settings_label_details">Дополнения</string>
+    <string name="settings_hint_details">У вас есть что добавить?</string>
+    <string name="settings_label_age_category">Возрастная категория</string>
+    <string name="settings_generate">Создать</string>
+
+    <string-array name="settings_educational_area_options">
+        <item>Ознакомление с окружающим миром</item>
+        <item>Формирование элементарных математических представлений</item>
+        <item>Творчество</item>
+        <item>Коммуникативные навыки (Развитие речи, художественная литература)</item>
+    </string-array>
+    
+    <string name="overview_label">Готово!</string>
+    <string name="overview_label_pdf_ready">Ваша игра готова. Вы можете скачать ее в формате PDF.</string>
+    <string name="overview_way_download">Скачать</string>
+    <string name="overview_label_choose_way">Или</string>
+    <string name="overview_way_share">Поделиться</string>
+    <string name="overview_generate_again">Сгенерировать снова</string>
+    <string name="hint_thematic">Авиарейс</string>
+    <string name="hint_additional_info">Хочу чтобы...</string>
 </resources>
