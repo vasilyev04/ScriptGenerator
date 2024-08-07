@@ -24,4 +24,6 @@ interface GenerationSettingsIntent {
         val additionalInformation: String
     ): GenerationSettingsIntent
 
+    object OnScriptCleared: GenerationSettingsIntent
+
 }

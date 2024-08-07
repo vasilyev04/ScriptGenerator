@@ -6,5 +6,7 @@ data class GenerationState(
     val participantsCount: String = "",
     val ageCategory: String = "",
     val additionalInformation: String = "",
-    val isDataCorrect: Boolean = true
+    val isDataCorrect: Boolean = true,
+    val isLoading: Boolean = false,
+    val textScript: String = ""
 )

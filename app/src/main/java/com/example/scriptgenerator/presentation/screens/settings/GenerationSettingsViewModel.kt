@@ -8,6 +8,7 @@ import com.example.scriptgenerator.domain.usecase.GenerateScriptUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,23 +26,70 @@ class GenerationSettingsViewModel @Inject constructor(
             }
             is GenerationSettingsIntent.ThematicValueChanged -> {
                 changeThematic(intent)
+                resetDataCorrectness()
             }
             is GenerationSettingsIntent.EducationalAreaValueChanged -> {
                 changeEducationalAre(intent)
+                resetDataCorrectness()
             }
             is GenerationSettingsIntent.ParticipantsCountValueChanged -> {
                 changeParticipantsCount(intent)
+                resetDataCorrectness()
             }
             is GenerationSettingsIntent.AgeCategoryValueChanged -> {
                 changeAgeCategory(intent)
+                resetDataCorrectness()
             }
             is GenerationSettingsIntent.AdditionalInformationValueChanged -> {
                 changeAdditionalInformation(intent)
             }
+
+            is GenerationSettingsIntent.OnScriptCleared -> {
+                clearScript()
+            }
+        }
+    }
+
+    private fun clearScript(){
+        _generationState.update {
+            it.copy(
+                textScript = ""
+            )
+        }
+    }
+
+    private fun fieldsAreNotEmpty(): Boolean {
+        val (
+            thematic,
+            educationalArea,
+            participantsCount,
+            ageCategory,
+        ) = _generationState.value
+
+
+        return !(thematic.isBlank() || educationalArea.isBlank()
+                || participantsCount.isBlank() || ageCategory.isBlank())
+    }
+
+    private fun resetDataCorrectness(){
+        _generationState.update {
+            it.copy(
+                isDataCorrect = true
+            )
         }
     }
 
     private fun validateGenerationSettings(){
+        if(!fieldsAreNotEmpty()){
+            _generationState.update {
+                it.copy(
+                    isDataCorrect = false
+                )
+            }
+
+            return
+        }
+
         val (
             thematic,
             educationalArea,
@@ -49,7 +97,6 @@ class GenerationSettingsViewModel @Inject constructor(
             ageCategory,
             additionalInformation
         ) = _generationState.value
-
 
         val settings = GenerationSettings(
             thematic,
@@ -59,18 +106,24 @@ class GenerationSettingsViewModel @Inject constructor(
             additionalInformation
         )
 
-        if(isGenerationSettingsCorrect(settings)){
-            _generationState.value = _generationState.value.copy(isDataCorrect = true)
-            generateScript(settings)
-        }else{
-            _generationState.value = _generationState.value.copy(isDataCorrect = false)
-        }
+        generateScript(settings)
     }
 
     private fun generateScript(settings: GenerationSettings){
+        _generationState.update {
+            it.copy(
+                isLoading = true
+            )
+        }
         viewModelScope.launch {
             val result = generateScriptUseCase.invoke(settings)
             Log.d("SCRIPT_RESULT", result.text)
+            _generationState.update {
+                it.copy(
+                    textScript = result.text,
+                    isLoading = false
+                )
+            }
         }
     }
 
@@ -98,12 +151,5 @@ class GenerationSettingsViewModel @Inject constructor(
         _generationState.value = _generationState.value.copy(
             additionalInformation = intent.additionalInformation
         )
-    }
-
-    private fun isGenerationSettingsCorrect(
-        generationSettings: GenerationSettings
-    ) = with(generationSettings){
-         !(thematic.isBlank() || educationalArea.isBlank()
-                || participantsCount.toString().isBlank() || ageCategory.isBlank())
     }
 }

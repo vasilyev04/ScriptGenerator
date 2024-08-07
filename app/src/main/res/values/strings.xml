@@ -26,4 +26,8 @@
     <string name="overview_generate_again">Сгенерировать снова</string>
     <string name="hint_thematic">Авиарейс</string>
     <string name="hint_additional_info">Хочу чтобы...</string>
+
+    <string name="error_empty_fields">Пожалуйста заполните все поля</string>
+
+    <string name="file_downloaded">Файл загружен в папку Downloads</string>
 </resources>

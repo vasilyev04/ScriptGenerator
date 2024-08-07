@@ -74,6 +74,12 @@ dependencies {
     //Gemini
     implementation(libs.generativeai)
 
+    //Permission Accompanist
+    implementation(libs.accompanist.permissions)
+
+    //Splash API
+    implementation(libs.androidx.core.splashscreen)
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

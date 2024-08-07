@@ -1,10 +1,15 @@
 package com.example.scriptgenerator.presentation.screens.settings
 
+import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -12,6 +17,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -22,9 +28,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.scriptgenerator.R
 import com.example.scriptgenerator.presentation.components.CustomButton
+import com.example.scriptgenerator.presentation.components.DisabledCustomButton
 import com.example.scriptgenerator.presentation.components.ExtendedInputTextField
 import com.example.scriptgenerator.presentation.components.InputSpinner
 import com.example.scriptgenerator.presentation.components.InputTextField
+import com.example.scriptgenerator.presentation.components.LoadingCustomButton
+import com.example.scriptgenerator.presentation.navigation.Screens
+import com.example.scriptgenerator.presentation.theme.backgroundColor
 import com.example.scriptgenerator.presentation.theme.labelTextColor
 import com.example.scriptgenerator.presentation.theme.textColor
 
@@ -34,16 +44,36 @@ fun GenerationSettingsScreen(
     viewModel: GenerationSettingsViewModel = hiltViewModel()
 ){
     Column(
-        modifier = Modifier.padding(
-            start = 15.dp,
-            end = 15.dp,
-            top = 30.dp
-        )
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(
+                start = 15.dp,
+                end = 15.dp,
+                top = 30.dp
+            )
     ) {
         val state by viewModel.generationState.collectAsState()
         val options = stringArrayResource(id = R.array.settings_educational_area_options).toList()
         LaunchedEffect(Unit) {
             viewModel.reduce(GenerationSettingsIntent.EducationalAreaValueChanged(options[0]))
+        }
+
+        if(!state.isDataCorrect){
+            Toast.makeText(
+                LocalContext.current,
+                stringResource(id = R.string.error_empty_fields),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+        if(state.textScript.isNotBlank()){
+            navController.navigate(
+                Screens.ScriptOverview.route.replace(
+                    oldValue = "{script}",
+                    newValue = state.textScript
+                )
+            )
+            viewModel.reduce(GenerationSettingsIntent.OnScriptCleared)
         }
 
         SettingsLabel()
@@ -90,13 +120,20 @@ fun GenerationSettingsScreen(
         )
 
         Spacer(modifier = Modifier.padding(top = 71.dp))
-        CustomButton(
-            stringResource(id = R.string.settings_generate),
-            onClick = {
-                viewModel.reduce(GenerationSettingsIntent.OnGenerateScriptButtonClicked)
-            }
-        )
+        if(state.isLoading){
+            LoadingCustomButton()
+        }else if(!state.isDataCorrect){
+            DisabledCustomButton(stringResource(id = R.string.settings_generate),)
+        }else{
+            CustomButton(
+                stringResource(id = R.string.settings_generate),
+                onClick = {
+                    viewModel.reduce(GenerationSettingsIntent.OnGenerateScriptButtonClicked)
+                }
+            )
+        }
     }
+
 }
 
 @Composable

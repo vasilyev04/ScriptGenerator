@@ -11,9 +11,8 @@ import com.example.scriptgenerator.presentation.screens.result.ScriptOverviewScr
 import com.example.scriptgenerator.presentation.screens.settings.GenerationSettingsScreen
 
 @Composable
-fun NavHost(navController: NavHostController, innerPadding: PaddingValues){
+fun NavHost(navController: NavHostController){
     NavHost(
-        modifier = Modifier.padding(innerPadding),
         navController = navController,
         startDestination = Screens.GenerationSettings.route
     ) {
@@ -22,7 +21,11 @@ fun NavHost(navController: NavHostController, innerPadding: PaddingValues){
         }
 
         composable(route = Screens.ScriptOverview.route) {
-            ScriptOverviewScreen(navController = navController)
+            val script = it.arguments?.getString("script") ?: ""
+            ScriptOverviewScreen(
+                navController = navController,
+                textScript = script
+            )
         }
     }
 }
